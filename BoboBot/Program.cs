@@ -10,11 +10,45 @@ namespace BoboBot
     {
         static void Main(string[] args)
         {
-            string saludo = "Hola!! me Llamo victor!";
+            string request = "";
+            string response = "";
+            string[] acciones = {"holas buenas saludos salud", "tiempo hará", "enciende led" };
+            double[] coincidencias = {0.0, 0.0, 0.0};
+            while (!request.Equals("quit")){
+                Console.Write("User:");
+                request = Console.ReadLine();
+                SAnalysis.totalCoincidence(SAnalysis.getWords(request), SAnalysis.getWords(acciones[0]), 0.5);
+                for(int i=0; i<2; i++)
+                {
+                    coincidencias[i] = SAnalysis.totalCoincidence(SAnalysis.getWords(request), SAnalysis.getWords(acciones[i]), 0.5);
+                }
 
-            SAnalysis.print(SAnalysis.getWords(saludo));
-            Console.WriteLine(SAnalysis.totalCoincidence(SAnalysis.getWords(saludo), SAnalysis.getWords("hola saludos buenas")));
-            Console.ReadKey();
+                double max = coincidencias.Max();
+
+                if (max > 0.6)
+                {
+                    int id = Array.IndexOf(coincidencias, max);
+
+                    switch (id)
+                    {
+                        case 0:
+                            response = SAnalysis.getSaludo();
+                            break;
+                        case 1:
+                            response = SAnalysis.getWeather();
+                            break;
+                        case 2:
+                            response = SAnalysis.setLed();
+                            break;
+                    }
+                    Console.WriteLine(response);
+                }
+                else
+                {
+                    Console.WriteLine("Lo siento, no lo he entendido!!\nHumans Win ;P");
+                }
+            }
+            Console.WriteLine("Goood bye!!");
         }
     }
 }

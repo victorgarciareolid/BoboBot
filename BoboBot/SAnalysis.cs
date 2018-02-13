@@ -49,7 +49,7 @@ namespace BoboBot
                 if (j > 0 && b[j + 1].Equals(a[i + 1])) rate += 1;
             }
 
-            return rate / (2* (a.Length - 2));
+            return rate / (2* (b.Length - 2));
         }
 
         public static string[] getWords(string input)
@@ -70,20 +70,53 @@ namespace BoboBot
             }
         }
 
-        public static double totalCoincidence(string[] input, string[] pattern)
+        public static double totalCoincidence(string[] input, string[] pattern, double dim)
         {
-            double aux = 0.0;
+            double aux, coi = 0.0;
+            int maincoi = 0;
 
             foreach(string p in pattern)
             {
                 foreach(string s in input)
                 {
-                    aux += SAnalysis.Coincidence(p, s);
-                    Console.WriteLine("{0}, {1} -> {2}", s, p, aux);
+                    aux = SAnalysis.Coincidence(p, s); ;
+                    if (aux>=dim)
+                    {
+                        maincoi++;
+                        coi += aux;
+                    }
+                    //Console.WriteLine("{0}, {1} -> {2}", s, p, aux);
                 }
             }
+            if (coi == 0) maincoi = 1;
+            return coi/maincoi;
+        }
 
-            return aux;
+        public static string getWeather()
+        {
+            return "The weather is okey!";
+        }
+
+        public static string setLed()
+        {
+
+            return "Led Switched!";
+        }
+
+        public static string getSaludo()
+        {
+            int hour = DateTime.Now.Hour;
+            if (6<hour && hour<12)
+            {
+                return "Buenoooos Diaaas!!";
+            }else if (12<= hour && hour < 20)
+            {
+                return "Bueeenas Tardes!!";
+            }
+            else
+            {
+                return "Bueenas Noches!!";
+            }
         }
     }
 }
