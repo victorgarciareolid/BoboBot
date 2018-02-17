@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,8 +15,9 @@ namespace BoboBot
             string response = "";
             string[] acciones = {"holas buenas saludos salud", "tiempo hará", "enciende led" };
             double[] coincidencias = {0.0, 0.0, 0.0};
+            TaskAwaiter<string> tiempo = SAnalysis.getWeather().GetAwaiter();
             while (!request.Equals("quit")){
-                Console.Write("User:");
+                Console.Write("User: ");
                 request = Console.ReadLine();
                 SAnalysis.totalCoincidence(SAnalysis.getWords(request), SAnalysis.getWords(acciones[0]), 0.5);
                 for(int i=0; i<2; i++)
@@ -35,7 +37,7 @@ namespace BoboBot
                             response = SAnalysis.getSaludo();
                             break;
                         case 1:
-                            response = SAnalysis.getWeather();
+                            response = tiempo.GetResult();
                             break;
                         case 2:
                             response = SAnalysis.setLed();

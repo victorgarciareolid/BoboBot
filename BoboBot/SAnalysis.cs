@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Net.Http;
+using System.IO;
+using System.Runtime.Serialization.Json;
 
 namespace BoboBot
 {
     class SAnalysis
     {
+        private static HttpClient c = new HttpClient();
+        private static string appid = "1a98e117a2a137a5977e46d9b8f6cf2e";
+        private static string city = "barcelona";
+
         public static string Clean(string input)
         {
             string output = "";
@@ -92,9 +96,20 @@ namespace BoboBot
             return coi/maincoi;
         }
 
-        public static string getWeather()
+        public async static Task<string> getWeather()
         {
-            return "The weather is okey!";
+            c.BaseAddress = new Uri("http://api.openweathermap.org/data/2.5/weather");
+            string param =  "?" + "q=" + city + "&" + "appid=" + appid;
+            HttpResponseMessage m = await c.GetAsync(param);
+
+            DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(Tiempo));
+            Stream weatherJson = await m.Content.ReadAsStreamAsync();
+
+            Tiempo t = (Tiempo)ser.ReadObject(weatherJson);
+
+
+            return "La temperatura es " + (t.main.temp - 273) + "C y hay una humedad relativa del " + t.main.humidity + "%";
+
         }
 
         public static string setLed()
